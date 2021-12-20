@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
+from os import getenv
+from shlex import split
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -114,17 +116,29 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
+        skip = False
         """ Create an object of any class"""
-        if not args:
+        arg = split(args)
+        if not arg:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+        new_instance = HBNBCommand.classes[arg[0]]()
+        del arg[0]
+        for argument in arg:
+            attributes = argument.split("=")
+            if len(attributes) == 2:
+                if hasattr(new_instance, attributes[0]):
+                    setattr(new_instance, attributes[0], attributes[1])
+            else:
+                skip = True
+                break
+        if skip == False:
+            print(new_instance.id)
+            storage.new(new_instance)
+            storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -319,6 +333,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
