@@ -225,7 +225,7 @@ class HBNBCommand(cmd.Cmd):
         print(print_list)
 
     def help_all(self):
-        """ Help information for the all command """
+        """ Help information for the al command """
         print("Shows all objects, or all of a class")
         print("[Usage]: all <className>\n")
 
