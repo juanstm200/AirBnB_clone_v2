@@ -14,5 +14,5 @@ def do_pack():
     try:
         comp_file = local("tar -cvzf versions/{} web_static/".format(compress))
         return "versions/{}".format(compress)
-    except:
+    except Exception:
         return None
