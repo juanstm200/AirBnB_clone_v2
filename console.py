@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """ Console Module """
-import cmd
-import models
-import sys
 from os import getenv
+from shlex import split
+import cmd
+import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -116,41 +116,29 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
+        skip = False
         """ Create an object of any class"""
-        list_args = args.split()
-        if not args:
+        arg = split(args)
+        if not arg:
             print("** class name missing **")
             return
-        elif list_args[0] not in HBNBCommand.classes:
+        elif arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
-        dict_args = {}
-        keyw = []
-        value = []
-        #print("--->>>>", list_args)
-        for arg in list_args:
-            tmp_arg = arg.split('=')
-            if len(tmp_arg) == 2:
-                tmp_arg[1] = tmp_arg[1].replace('_', ' ')
-                tmp_arg[1] = tmp_arg[1].replace('"', '')
-                keyw.append(tmp_arg[0])
-                value.append(tmp_arg[1])
-                dict_args = dict(zip(keyw, value))
-
-                #dict_args[tmp_arg[0]] = tmp_arg[1]
-        #print("--->", dict_args)
-
-        new_instance = HBNBCommand.classes[list_args[0]]()
-
-        for key, value in dict_args.items():
-            setattr(new_instance, key, value)
-        #print(new_instance)
-        if getenv("HBNB_TYPE_STORAGE") != "db": ########
+        new_instance = HBNBCommand.classes[arg[0]]()
+        del arg[0]
+        for argument in arg:
+            attributes = argument.split("=")
+            if len(attributes) == 2:
+                if hasattr(new_instance, attributes[0]):
+                    setattr(new_instance, attributes[0], attributes[1])
+            else:
+                skip = True
+                break
+        if skip == False:
+            print(new_instance.id)
             storage.new(new_instance)
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+            storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -225,19 +213,21 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
-        if not args:
-            o = storage.all()
-            print([o[k].__str__() for k in o])
-            return
-        try:
-            args_2 = args.split(" ")
-            if args_2[0] not in HBNBCommand.classes:
-                raise NameError()
+        print_list = []
 
-            o = storage.all(eval(args_2[0]))
-            print([o[k].__str__() for k in o])
-        except NameError:
-            print("** class doesn't exist")
+        if args:
+            args = args.split(' ')[0]  # remove possible trailing args
+            if args not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+            for k, v in storage._FileStorage__objects.items():
+                if k.split('.')[0] == args:
+                    print_list.append(str(v))
+        else:
+            for k, v in storage._FileStorage__objects.items():
+                print_list.append(str(v))
+
+        print(print_list)
 
     def help_all(self):
         """ Help information for the all command """
@@ -343,6 +333,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
