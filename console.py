@@ -135,7 +135,7 @@ class HBNBCommand(cmd.Cmd):
             else:
                 skip = True
                 break
-        if skip == False:
+        if skip is False:
             print(new_instance.id)
             storage.new(new_instance)
             storage.save()
