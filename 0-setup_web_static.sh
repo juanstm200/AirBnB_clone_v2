@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Example of script to configure a server
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# Config Server
+sudo apt-get update -y && sudo apt-get upgrade -y
 sudo apt-get install -y nginx
 mkdir -p /data/web_static/
 mkdir -p /data/web_static/releases/test/
