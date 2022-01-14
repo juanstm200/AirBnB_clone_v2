@@ -28,14 +28,14 @@ def do_deploy(archive_path):
         return False
 
     put(archive_path, "/tmp/")
-    run("mkdir -p {}{}".format(path, file_wext))
-    run("tar -xzf /tmp/{} -C {}{}".format(file_name, path, file_wext))
-    run("rm /tmp/{}".format(file_name))
-    run("mv {}{}/web_static/* {}{}/".format(path, file_wext, path, file_wext))
-    cmd = "rm -rf /data/web_static/releases/"
+    run("sudo mkdir -p {}{}".format(path, file_wext))
+    run("sudo tar -xzf /tmp/{} -C {}{}".format(file_name, path, file_wext))
+    run("sudo rm /tmp/{}".format(file_name))
+    run("sudo mv {}{}/web_static/* {}{}/".format(path, file_wext, path, file_wext))
+    cmd = "sudo rm -rf /data/web_static/releases/"
     run("{}{}/web_static".format(cmd, file_wext))
-    run("rm -rf /data/web_static/current")
-    command = "ln -s /data/web_static/releases/{}".format(file_wext)
+    run("sudo rm -rf /data/web_static/current")
+    command = "sudo ln -s /data/web_static/releases/{}".format(file_wext)
     command += " /data/web_static/current"
     run(command)
     return True
