@@ -7,28 +7,29 @@ app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def hello():
-    '''Return Hello HBNB'''
+def hbnb():
+    """ / route  """
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
-def name():
-    '''Return Name'''
+def index():
+    """ /hbnb route """
     return 'HBNB'
 
 
-@app.route('/c/<txt>', strict_slashes=False)
-def display_c_text(txt):
-    """Function that returns text variable"""
-    return 'C {}'.format(txt.replace('_', ' '))
+@app.route('/c/<text>', strict_slashes=False)
+def cisfun(text):
+    """ /c route """
+    return 'C {:s}'.format(text.replace('_', ' '))
 
 
-@app.route('/python', defaults={'text': 'is cool'}, strict_slashes=False)
-@app.route('/python/<string:text>', strict_slashes=False)
-def display_python_text(text):
-    """Returns text variable"""
-    return 'Python {}'.format(escape(text.replace('_', ' ')))
+@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False)
+def pythoniscool(text):
+    """ /c route """
+    return 'Python {:s}'.format(text.replace('_', ' '))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
