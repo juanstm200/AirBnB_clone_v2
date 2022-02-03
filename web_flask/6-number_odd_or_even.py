@@ -1,54 +1,57 @@
 #!/usr/bin/python3
-""" Flask route model """
-from flask import Flask
-from flask import render_template
-
-
+'''Flask web Framework'''
+from flask import Flask, render_template
 app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def hbnb():
-    """ / route  """
+def hello():
+    '''Return Hello HBNB'''
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
-def index():
-    """ /hbnb route """
+def name():
+    '''Return Name'''
     return 'HBNB'
 
 
-@app.route('/c/<text>', strict_slashes=False)
-def cisfun(text):
-    """ /c route """
-    return 'C {:s}'.format(text.replace('_', ' '))
+@app.route('/c/<txt>', strict_slashes=False)
+def display_c_text(txt):
+    """Function that returns text variable"""
+    return 'C {}'.format(txt.replace('_', ' '))
 
 
-@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
-@app.route('/python/<text>', strict_slashes=False)
-def pythoniscool(text):
-    """ /c route """
-    return 'Python {:s}'.format(text.replace('_', ' '))
+@app.route('/python/', strict_slashes=False)
+@app.route('/python/<txt>', strict_slashes=False)
+def python_route(txt='is cool'):
+    """Returns text variable"""
+    return 'Python {}'.format(txt.replace('_', ' '))
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def number(n):
-    """ /number route """
-    return '{} is a number'.format(n)
+def number_route(n):
+    """ /number/<n> route return """
+    if isinstance(n, int):
+        return "{} is a number".format(n)
 
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
-def number_template(n):
-    """ /number_template path """
-    return render_template('5-number.html', n=n)
+def number_template_route(n=None):
+    """ /number_template/<n> route return """
+    if isinstance(n, int):
+        return render_template("5-number.html", n=n)
 
 
 @app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
-def number_odd_or_even(n):
-    """ /number_odd_or_even path """
-    return render_template('6-number_odd_or_even.html', n=n)
+def number_odd_or_even_route(n=None):
+    """ number_odd_or_even_route """
+    if isinstance(n, int):
+        if n % 2:
+            oe = "odd"
+        else:
+            oe = "even"
+        return render_template("6-number_odd_or_even.html", n=n, oe=oe)
 
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000) 
